@@ -1,83 +1,83 @@
-sora,
-roboco,
-miko,
-suisei,
-azki,
+sora
+roboco
+miko
+suisei
+azki
 
-mel,
-fubuki,
-aki,
-haato,
-haachama,
+mel
+fubuki
+aki
+haato
+haachama
 
-aqua,
-shion,
-ayame,
-choco,
-subaru,
+aqua
+shion
+ayame
+choco
+subaru
 
-mio,
-okayu,
-korone,
+mio
+okayu
+korone
 
-pekora,
-rushia,
-flare,
-noel,
-marine,
-senchou,
+pekora
+rushia
+flare
+noel
+marine
+senchou
 
-kanata,
-watame,
-towa,
-luna,
-coco,
+kanata
+watame
+towa
+luna
+coco
 
-lamy,
-nene,
-nenechi,
-botan,
-polka,
+lamy
+nene
+nenechi
+botan
+polka
 
-risu,
-moona,
-iofi,
-lofi,
+risu
+moona
+iofi
+lofi
 
-ollie,
-anya,
-reine,
+ollie
+anya
+reine
 
-ame,
-amelia,
-calli,
-calliope,
-kiara,
-gura,
-goora,
-ina,
-irys,
+ame
+amelia
+calli
+calliope
+kiara
+gura
+goora
+ina
+irys
 
-fauna,
-kronii,
-mumei,
-bae,
-baelz,
-sana,
+fauna
+kronii
+mumei
+bae
+baelz
+sana
 
 
-miyabi,
-izuru,
-aruran,
-rikka,
+miyabi
+izuru
+aruran
+rikka
 
-astel,
-temma,
-roberu,
-son,
+astel
+temma
+roberu
+son
 
-shien,
-oga,
+shien
+oga
 
-yagoo,
-a-chan,
+yagoo
+a-chan
