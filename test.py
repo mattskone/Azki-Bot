@@ -1,6 +1,5 @@
 import os
 import praw
-import ParseComment
 
 reddit = praw.Reddit(
     client_id = os.environ.get('AZKI_ID'),
@@ -16,6 +15,5 @@ for raw_comment in subreddit.stream.comments(): #Grabs every new comment made in
     comment = raw_comment.body.lower().replace(",", "")
     if f" {trigger} " in comment: # Looks for trigger
         comment_split = comment.split()
-        trigger_index = comment_split.index(trigger)
-        if comment_split[trigger_index-1] in vtuber_list: # Check if the word before the trigger is a whitelisted VTuber
-            ParseComment.createSearch(comment_split, trigger_index)
+        if comment_split[comment_split.index(trigger)-1] in vtuber_list: # Check if the word before the trigger is a whitelisted VTuber
+            print(comment)
