@@ -1,99 +1,104 @@
 import os
+
 import praw
 from apiclient.discovery import build
+
 import MemeSongList as songs
 
 
 reddit = praw.Reddit(
-    client_id = os.environ.get('AZKI_ID'),
-    client_secret = os.environ.get('AZKI_SECRET'),
-    user_agent = os.environ.get('AZKI_USER_AGENT')) 
+    client_id=os.environ.get('AZKI_ID'),
+    client_secret=os.environ.get('AZKI_SECRET'),
+    user_agent=os.environ.get('AZKI_USER_AGENT'),
+    username=os.environ.get('BOT_NAME'),
+    password=os.environ.get('BOT_PASSWORD')
+    )
 subreddit = reddit.subreddit('Hololive')
 
-youtube = build('youtube','v3',developerKey = os.environ.get('YOUTUBE_API_KEY'))
+# Using this to test until I'm granted access by r/hololive mods
+#subreddit = reddit.subreddit('skoncol17BotTest')
 
-'''
-Takes the reddit comment picks out the VTuber name and title of song
-params:
-    - comment: the parsed reddit comment
-    - triggerIndex: the... index of the trigger word
-return: 
-    - A list containing the vtuber name and the song being requested
+youtube = build('youtube','v3',developerKey=os.environ.get('YOUTUBE_API_KEY'))
+
+
+def comment_parse(comment, trigger_index):
+    """
+    Returns a list containing the VTuber and the requested song
     
-TODO: 
-    - Does not work if the comment continues after the request.  Need to make some cutoff for the song
-'''
-def createSearch(comment, triggerIndex):
-    vtuber = comment[triggerIndex-1]
-    song = " ".join(comment[triggerIndex+1:])
+    :param comment: the parsed reddit comment
+    :param trigger_index: the... index of the trigger word
+        
+    REQ: Make some cutoff for the song 
+         Currently searches for everything after the trigger
+    """
+    vtuber = comment[trigger_index-1]
+    song = " ".join(comment[trigger_index+1:])
     return vtuber, song
 
+      
+def song_search(request_parts):
+    """
+    Returns the link to a video of the vtuber singing the
+    requested song
     
-'''
-Retreives the link to a video of the vtuber singing the requested song
-params:
-    - search_parts: A list containing the vtuber name and the song being requested
-return:
-    - Link to a youtube video
-    
-TODO:
-    - Access the keywords of the video to help verify if the video is Hololive-related
-    - Related: Build a system which verifies that the video is actually a song and not some clip or unrelated video
-    - Exception handling if bot cannot connect to YouTube
-'''    
-def songSearch(search_parts):
-    if search_parts[1] == "bakamitai" or search_parts[1] == "baka mitai":
-        return songs.bakamitai[search_parts[0]]
-    elif search_parts[1] == "unravel":
-        return songs.unravel[search_parts[0]]
-    else: 
-        request = youtube.search().list(q=f"{search_parts[0]} / {search_parts[1]}", part='id, snippet', type='video', maxResults=1)
+    :param request_parts: A list containing the word before the trigger and
+          everything after the trigger
+        
+    REQ: Access the keywords/desc of the video to help verify if the
+    video is Hololive-related
+    TODO: YouTube-related exception handling
+    """ 
+    if request_parts[1] == "bakamitai" or request_parts[1] == "baka mitai":
+        return songs.bakamitai[request_parts[0]]
+    elif request_parts[1] == "unravel":
+        return songs.unravel[request_parts[0]]
+    else:
+        request = youtube.search().list(
+            q=f"{request_parts[0]} / {request_parts[1]}",
+            part='id, snippet', type='video', maxResults=1
+            )
         result = request.execute()
         for item in result['items']:
-            return item['snippet']['title'], f"https://youtu.be/{item['id']['videoId']}" # I wish it gave the full url :(
+            return item['snippet']['title'], 
+                f"https://youtu.be/{item['id']['videoId']}"
 
 
-'''
-Writes the reply which will be sent to the commenter
-params:
-    - video: link to a youtube video
-    - search_parts: A list containing the vtuber name and the song being requested
-return:
-    - Message to commenter making the request
+def write_reply(request_parts):
+    """
+    Writes the reply which will be sent to the commenter
+    
+    :params request_parts: A list containing the vtuber name and the 
+    song being requested
 
-TODO:
-    - Discerne whether a video could not be found because the VTuber hasn't sung it, or because the string after the trigger is not actually a song
-'''
-def writeReply(video, search_parts):
-    if video == None:
+    TODO: Discerne whether a video could not be found because the VTuber
+          hasn't sung it, or because the string after the trigger is not
+          actually a song
+    """
+    video = song_search(request_parts)
+    
+    if video == None:  # Currently does nothing
         return "I can't seem to find that track. Sorry about that :("
-    elif search_parts[1] == "bakamitai" or search_parts[1] == "baka mitai":
+    elif request_parts[1] == "bakamitai" or request_parts[1] == "baka mitai":
         return f"[Dame da ne~]({video})"
-    elif search_parts[1] == "unravel":
+    elif request_parts[1] == "unravel":
         return f"[This is so sad pien~]({video})"
     else:
         return f"Now playing [{video[0]}]({video[1]})"
 
 
-'''
-TODO:
-    - Exception handling if reddit servers cannot be reached
-    - Execute request even if trigger word appears before request. Ex: "I really wanted to see them play Dead Rising 2.  Coco play Baka Mitai"
-'''
 file = open('VTubers.txt', 'r')
 vtuber_list = file.read().split("\n")
 
-for raw_comment in subreddit.stream.comments(): #Grabs every new comment made in the subreddit
-    trigger = "play" # If raw_comment does not have this word, ignore it
-    comment = raw_comment.body.lower().replace(",", "") # The correct grammar is <VTuber>, play <Song>.  Even though most people ommit it, a number of people (including me) use it
-    if f" {trigger} " in comment: # Looks for trigger
+"""TODO: Reddit-related exception handling"""
+for raw_comment in subreddit.stream.comments():
+    trigger = "play"  # If the comment does not have this word, ignore it
+    comment = raw_comment.body.lower().replace(",", "")
+    if f" {trigger} " in comment:
         comment_split = comment.split()
         trigger_index = comment_split.index(trigger)
-        if comment_split[trigger_index-1] in vtuber_list: # Check if the word before the trigger is a whitelisted VTuber
-            key_elements = createSearch(comment_split, trigger_index)
-            response = writeReply(songSearch(key_elements), key_elements)
-            #raw_comment.reply(response)    Can't use this until I'm granted permission by Hololive mods
+        if comment_split[trigger_index-1] in vtuber_list:  # If it's not a whitelisted VTuber, ignore it
+            key_elements = comment_parse(comment_split, trigger_index)
+            response = write_reply(key_elements)
+            
+            #raw_comment.reply(response)
             print(response)
-            
-            
-            

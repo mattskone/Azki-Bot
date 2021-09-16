@@ -14,7 +14,8 @@ bakamitai = {"yagoo": "https://www.youtube.com/watch?v=Lyzu5SIFgO0",
              "amelia": "https://youtu.be/9og7zX4XgE4?t=66",
              "calli": "https://youtu.be/BSqlELyPmIo?t=66",
              "calliope": "https://youtu.be/BSqlELyPmIo?t=66",
-             "gura": "https://youtu.be/Pt7KbDvUwmQ?t=65"}
+             "gura": "https://youtu.be/Pt7KbDvUwmQ?t=65"
+             }
 
 unravel = {"ina": "https://youtu.be/n-hRYCpm8wQ?t=65",
            "suisei": "https://youtu.be/ITfSHqa7zjM",
@@ -33,4 +34,5 @@ unravel = {"ina": "https://youtu.be/n-hRYCpm8wQ?t=65",
            "amelia": "https://youtu.be/EbR5ltmTjiw?t=62",
            "ollie": "https://youtu.be/kcblNVR2tVg?t=67",
            "izuru": "https://youtu.be/rdg6W69fCr0?t=69",
-           "astel": "https://youtu.be/acIIAVSfvqk?t=75"}
+           "astel": "https://youtu.be/acIIAVSfvqk?t=75"
+           }

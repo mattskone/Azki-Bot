@@ -1,3 +1,2 @@
 praw==7.4.0
-python-dotenv==0.19.0
 google-api-python-client==2.20.0
