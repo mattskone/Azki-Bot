@@ -103,12 +103,13 @@ def main():
     vtuber_list = file.read().split("\n")
     
     for raw_comment in subreddit.stream.comments():
-        trigger = "play"  # If the comment does not have this word, ignore it
+        trigger = ", play"  # If the comment does not have this word, ignore it
         comment = raw_comment.body.lower().replace(",", "")
         if f" {trigger} " in comment:
             #import pdb; pdb.set_trace()
             comment_split = comment.split(" ")
             trigger_index = comment_split.index(trigger)
+            comment_split[trigger_index-1].replace(",", "")
             if comment_split[trigger_index-1] in vtuber_list:  # If it's not a whitelisted VTuber, ignore it
                 key_elements = comment_parse(comment_split, trigger_index)
                 response = write_reply(key_elements)

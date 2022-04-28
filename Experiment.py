@@ -6,7 +6,7 @@ import requests
 youtube_key = os.environ.get('YOUTUBE_API_KEY')
 youtube = build('youtube','v3',developerKey = youtube_key)
 
-id_payload = {'key': youtube_key, 'fields': 'items(id(videoId))', 'part': 'id', 'q': 'kiara / sparks'}
+id_payload = {'key': youtube_key, 'fields': 'items(id(videoId))', 'part': 'id,snippet', 'q': 'kiara / sparks'}
 video_id = requests.get('https://www.googleapis.com/youtube/v3/videos?', id_payload)
 
 print(video_id.content)
